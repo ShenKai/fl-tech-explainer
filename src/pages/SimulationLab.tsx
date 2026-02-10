@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FlaskConical, ArrowLeft } from "lucide-react";
+import { FlaskConical, ArrowLeft, Database } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useSimulationEngine } from "@/hooks/useSimulationEngine";
@@ -7,6 +7,7 @@ import { SimulationControls } from "@/components/simulation/SimulationControls";
 import { OrbitalVisualization } from "@/components/simulation/OrbitalVisualization";
 import { LiveAnalytics } from "@/components/simulation/LiveAnalytics";
 import { LogWindow } from "@/components/simulation/LogWindow";
+import { DATASET_INFO } from "@/data/adultIncomeDataset";
 
 const SimulationLab = () => {
   const engine = useSimulationEngine();
@@ -44,8 +45,9 @@ const SimulationLab = () => {
               <span className="text-foreground">Laboratory</span>
             </h1>
             <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-              Configure, run, and visualize federated learning simulations with
-              Flower-style training rounds, FedAvg aggregation, and live metrics.
+              Training on the <strong>{DATASET_INFO.name}</strong> dataset
+              ({DATASET_INFO.trainSamples.toLocaleString()} train / {DATASET_INFO.testSamples.toLocaleString()} test samples, {DATASET_INFO.numFeatures} features).
+              Flower-style FedAvg aggregation with live metrics.
             </p>
           </motion.div>
         </div>
@@ -130,24 +132,70 @@ const SimulationLab = () => {
 
             {/* Client details */}
             <div className="glass-card p-5">
-              <h3 className="text-sm font-semibold mb-3">Client Details</h3>
+              <h3 className="text-sm font-semibold mb-3">
+                {engine.mode === "vertical" ? "Party Details" : "Client Details"}
+              </h3>
               <div className="space-y-2">
                 {engine.clients.map((c) => {
                   const latest = engine.state.metrics[engine.state.metrics.length - 1];
                   const cm = latest?.clientMetrics.find((m) => m.clientId === c.id);
                   return (
-                    <div key={c.id} className="flex items-center gap-2 text-xs">
-                      <span className="w-3 h-3 rounded-full shrink-0" style={{ background: `hsl(${c.color})` }} />
-                      <span className="font-medium w-16">{c.label}</span>
-                      <span className="font-mono text-muted-foreground">{c.sampleSize} samples</span>
-                      {cm && (
-                        <span className="font-mono ml-auto text-muted-foreground">
-                          {(cm.accuracy * 100).toFixed(1)}%
+                    <div key={c.id} className="text-xs space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full shrink-0" style={{ background: `hsl(${c.color})` }} />
+                        <span className="font-medium w-16">{c.label}</span>
+                        <span className="font-mono text-muted-foreground">
+                          {c.sampleSize.toLocaleString()} samples
                         </span>
+                        {cm && (
+                          <span className="font-mono ml-auto text-muted-foreground">
+                            {(cm.accuracy * 100).toFixed(1)}%
+                          </span>
+                        )}
+                      </div>
+                      {c.features && (
+                        <div className="ml-5 flex flex-wrap gap-1">
+                          {c.features.map((f) => (
+                            <span
+                              key={f}
+                              className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono text-muted-foreground"
+                            >
+                              {f}
+                            </span>
+                          ))}
+                        </div>
                       )}
                     </div>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* Dataset info */}
+            <div className="glass-card p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Database className="w-4 h-4 text-primary" />
+                <h3 className="text-sm font-semibold">Dataset</h3>
+              </div>
+              <div className="space-y-1.5 text-xs">
+                <p className="font-medium">{DATASET_INFO.name}</p>
+                <p className="text-muted-foreground">
+                  {DATASET_INFO.totalSamples.toLocaleString()} total samples • {DATASET_INFO.numFeatures} features
+                </p>
+                <p className="text-muted-foreground">
+                  Label: <span className="font-mono">"{DATASET_INFO.labelName}"</span> — {DATASET_INFO.classes.join(" / ")}
+                </p>
+                <p className="text-muted-foreground">
+                  Class balance: {(DATASET_INFO.classRatio[">50K"] * 100).toFixed(0)}% / {(DATASET_INFO.classRatio["≤50K"] * 100).toFixed(0)}%
+                </p>
+                <a
+                  href="https://huggingface.co/datasets/scikit-learn/adult-census-income"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-1 text-primary hover:underline text-[11px]"
+                >
+                  View on Hugging Face →
+                </a>
               </div>
             </div>
           </motion.div>

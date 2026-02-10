@@ -1,4 +1,9 @@
 import { useState, useCallback, useRef } from "react";
+import {
+  DATASET_INFO,
+  horizontalPartition,
+  verticalPartition,
+} from "@/data/adultIncomeDataset";
 
 export type FLMode = "horizontal" | "vertical";
 
@@ -7,6 +12,8 @@ export interface ClientConfig {
   label: string;
   sampleSize: number;
   color: string;
+  /** Features held by this client (relevant in vertical FL) */
+  features?: string[];
 }
 
 export interface HyperParams {
@@ -51,14 +58,27 @@ const CLIENT_COLORS = [
   "350 75% 55%",
 ];
 
-function generateClientConfigs(count: number, balanced: boolean): ClientConfig[] {
-  const baseSamples = 500;
-  return Array.from({ length: count }, (_, i) => ({
+function generateClientConfigs(
+  count: number,
+  balanced: boolean,
+  mode: FLMode
+): ClientConfig[] {
+  if (mode === "vertical") {
+    const parts = verticalPartition(count);
+    return parts.map((p, i) => ({
+      id: i,
+      label: `Party ${i + 1}`,
+      sampleSize: p.sampleSize,
+      features: p.features,
+      color: CLIENT_COLORS[i],
+    }));
+  }
+  // Horizontal: split rows
+  const sizes = horizontalPartition(count, balanced);
+  return sizes.map((size, i) => ({
     id: i,
     label: `Client ${i + 1}`,
-    sampleSize: balanced
-      ? baseSamples
-      : Math.floor(baseSamples * (0.4 + Math.random() * 1.2)),
+    sampleSize: size,
     color: CLIENT_COLORS[i],
   }));
 }
@@ -107,7 +127,7 @@ function ts(): string {
 }
 
 export function useSimulationEngine() {
-  const [mode, setMode] = useState<FLMode>("horizontal");
+  const [mode, _setMode] = useState<FLMode>("horizontal");
   const [numClients, setNumClients] = useState(3);
   const [balanced, setBalanced] = useState(true);
   const [hyperParams, setHyperParams] = useState<HyperParams>({
@@ -117,8 +137,13 @@ export function useSimulationEngine() {
   });
   const [totalRounds, setTotalRounds] = useState(10);
   const [clients, setClients] = useState<ClientConfig[]>(() =>
-    generateClientConfigs(3, true)
+    generateClientConfigs(3, true, "horizontal")
   );
+
+  const setMode = useCallback((m: FLMode) => {
+    _setMode(m);
+    setClients((prev) => generateClientConfigs(prev.length, balanced, m));
+  }, [balanced]);
   const [state, setState] = useState<SimulationState>({
     isRunning: false,
     phase: { type: "idle", activeClients: [], round: 0 },
@@ -134,9 +159,9 @@ export function useSimulationEngine() {
     (count: number, isBalanced: boolean) => {
       setNumClients(count);
       setBalanced(isBalanced);
-      setClients(generateClientConfigs(count, isBalanced));
+      setClients(generateClientConfigs(count, isBalanced, mode));
     },
-    []
+    [mode]
   );
 
   const addLog = useCallback(
@@ -164,7 +189,18 @@ export function useSimulationEngine() {
     }));
 
     const modeLabel = mode === "horizontal" ? "Horizontal" : "Vertical";
-    addLog("INFO", `flwr: Starting ${modeLabel} FL simulation with ${clients.length} clients`);
+    addLog("INFO", `flwr: Dataset: ${DATASET_INFO.name} (${DATASET_INFO.trainSamples.toLocaleString()} train / ${DATASET_INFO.testSamples.toLocaleString()} test)`);
+    addLog("INFO", `flwr: Features: ${DATASET_INFO.numFeatures} | Label: "${DATASET_INFO.labelName}" | Classes: ${DATASET_INFO.classes.join(", ")}`);
+    addLog("INFO", `flwr: Starting ${modeLabel} FL simulation with ${clients.length} ${mode === "vertical" ? "parties" : "clients"}`);
+    if (mode === "vertical") {
+      clients.forEach((c) => {
+        addLog("DEBUG", `flwr: ${c.label} holds features: [${c.features?.join(", ")}]`);
+      });
+    } else {
+      clients.forEach((c) => {
+        addLog("DEBUG", `flwr: ${c.label} holds ${c.sampleSize.toLocaleString()} samples`);
+      });
+    }
     addLog("INFO", `flwr: Strategy FedAvg | LR=${hyperParams.learningRate} | Epochs=${hyperParams.localEpochs} | Batch=${hyperParams.batchSize}`);
     addLog("INFO", `flwr: Total rounds: ${totalRounds}`);
     await sleep(600);

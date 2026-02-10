@@ -125,7 +125,12 @@ export function SimulationControls({
                 className="w-2 h-2 rounded-full"
                 style={{ background: `hsl(${c.color})` }}
               />
-              <span className="font-mono">{c.sampleSize}</span>
+              <span className="font-mono">{c.sampleSize.toLocaleString()}</span>
+              {c.features && (
+                <span className="text-muted-foreground ml-0.5">
+                  ({c.features.length} feat.)
+                </span>
+              )}
             </div>
           ))}
         </div>
