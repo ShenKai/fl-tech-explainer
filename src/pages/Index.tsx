@@ -4,7 +4,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HorizontalFLDemo } from "@/components/HorizontalFLDemo";
 import { VerticalFLDemo } from "@/components/VerticalFLDemo";
 import { ComparisonChart } from "@/components/ComparisonChart";
-import { LayoutGrid, Layers, GitCompare } from "lucide-react";
+import { LayoutGrid, Layers, GitCompare, FlaskConical } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("horizontal");
@@ -34,10 +36,16 @@ const Index = () => {
               <br />
               <span className="text-foreground">Partitioning Explained</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-6">
               Explore how data is partitioned and models are trained in horizontal
               and vertical federated learning — without sharing raw data.
             </p>
+            <Button asChild size="lg" className="gap-2">
+              <Link to="/simulation">
+                <FlaskConical className="w-4 h-4" />
+                FL Simulation Laboratory
+              </Link>
+            </Button>
           </motion.div>
         </div>
       </header>
