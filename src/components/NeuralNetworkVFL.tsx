@@ -184,10 +184,12 @@ export function NeuralNetworkVFL() {
   useEffect(() => {
     if (isPlaying) {
       const timer = setTimeout(() => {
-        const nextIndex = (stepIndex + 1) % steps.length;
-        setStep(steps[nextIndex].key);
-        if (nextIndex === 0) setIsPlaying(false);
-      }, 3000);
+        if (stepIndex < steps.length - 1) {
+          setStep(steps[stepIndex + 1].key);
+        } else {
+          setIsPlaying(false);
+        }
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [isPlaying, step, stepIndex]);
