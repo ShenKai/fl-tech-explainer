@@ -210,8 +210,8 @@ export function DecisionTreeVFL() {
   };
 
   const partyA = { color: "hsl(200, 85%, 50%)", features: ["Age", "City"], splits: ["Age < 30", "Age < 45", "City = NYC"] };
-  const partyB = { color: "hsl(280, 70%, 55%)", features: ["Income", "Tier"], splits: ["Income > 80K", "Income > 100K", "Tier = Gold"] };
-  const partyC = { color: "hsl(35, 90%, 55%)", features: ["Tenure", "Label*"], splits: ["Tenure > 10", "Tenure > 20"] };
+  const partyB = { color: "hsl(280, 70%, 55%)", features: ["Income", "Income Class"], splits: ["Income > 80K", "Income > 100K", "Class = >50K"] };
+  const partyC = { color: "hsl(35, 90%, 55%)", features: ["Name (Join Key)", "Label*"], splits: ["Income > 85K", "Age > 35"] };
 
   return (
     <div className="space-y-6">
@@ -323,7 +323,7 @@ export function DecisionTreeVFL() {
                 {[
                   { label: "A", color: partyA.color, split: "Age<30" },
                   { label: "B", color: partyB.color, split: "Income>80K" },
-                  { label: "C", color: partyC.color, split: "Tenure>10" },
+                  { label: "C", color: partyC.color, split: "Age>35" },
                 ].map((p, i) => (
                   <motion.div
                     key={p.label}
@@ -427,7 +427,7 @@ export function DecisionTreeVFL() {
                 
                 {/* Level 2 Right - Party C */}
                 <TreeNode
-                  label="Tenure>15"
+                  label="Age>35"
                   color={partyC.color}
                   x={300}
                   y={90}
@@ -437,10 +437,10 @@ export function DecisionTreeVFL() {
                 />
                 
                 {/* Leaves */}
-                <TreeNode label="Class A" isLeaf color="hsl(140, 60%, 45%)" x={50} y={150} delay={0.6} />
-                <TreeNode label="Class B" isLeaf color="hsl(40, 70%, 50%)" x={150} y={150} delay={0.7} />
-                <TreeNode label="Class B" isLeaf color="hsl(40, 70%, 50%)" x={250} y={150} delay={0.8} />
-                <TreeNode label="Class C" isLeaf color="hsl(0, 60%, 50%)" x={350} y={150} delay={0.9} />
+                <TreeNode label="≤50K" isLeaf color="hsl(140, 60%, 45%)" x={50} y={150} delay={0.6} />
+                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={150} y={150} delay={0.7} />
+                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={250} y={150} delay={0.8} />
+                <TreeNode label="≤50K" isLeaf color="hsl(0, 60%, 50%)" x={350} y={150} delay={0.9} />
               </svg>
 
               {/* Inference path */}
@@ -450,11 +450,11 @@ export function DecisionTreeVFL() {
                 transition={{ delay: 1.2 }}
                 className="glass-card p-3 text-center max-w-md"
               >
-                <div className="text-xs font-semibold mb-2">Joint Inference for User X</div>
+                <div className="text-xs font-semibold mb-2">Joint Inference for Emma Fischer</div>
                 <div className="text-[10px] space-y-1">
-                  <div><span style={{ color: partyB.color }}>Party B:</span> Income=95K → <span className="text-emerald-400">Yes</span></div>
-                  <div><span style={{ color: partyC.color }}>Party C:</span> Tenure=8 → <span className="text-red-400">No</span></div>
-                  <div className="font-bold mt-2">→ Prediction: Class B</div>
+                  <div><span style={{ color: partyB.color }}>Party B:</span> Income=105K → <span className="text-emerald-400">Yes (&gt;80K)</span></div>
+                  <div><span style={{ color: partyA.color }}>Party A:</span> Age=38 → <span className="text-emerald-400">Yes (&gt;35)</span></div>
+                  <div className="font-bold mt-2">→ Prediction: &gt;50K ✓</div>
                 </div>
               </motion.div>
             </motion.div>
@@ -487,17 +487,17 @@ export function DecisionTreeVFL() {
                   children={{ leftX: 50, rightX: 150, leftY: 150, rightY: 150 }}
                 />
                 <TreeNode
-                  label="Tenure>15"
+                  label="Age>35"
                   color={partyC.color}
                   x={300}
                   y={90}
                   delay={0.2}
                   children={{ leftX: 250, rightX: 350, leftY: 150, rightY: 150 }}
                 />
-                <TreeNode label="A" isLeaf color="hsl(140, 60%, 45%)" x={50} y={150} delay={0.4} />
-                <TreeNode label="B" isLeaf color="hsl(40, 70%, 50%)" x={150} y={150} delay={0.5} />
-                <TreeNode label="B" isLeaf color="hsl(40, 70%, 50%)" x={250} y={150} delay={0.6} />
-                <TreeNode label="C" isLeaf color="hsl(0, 60%, 50%)" x={350} y={150} delay={0.7} />
+                <TreeNode label="≤50K" isLeaf color="hsl(140, 60%, 45%)" x={50} y={150} delay={0.4} />
+                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={150} y={150} delay={0.5} />
+                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={250} y={150} delay={0.6} />
+                <TreeNode label="≤50K" isLeaf color="hsl(0, 60%, 50%)" x={350} y={150} delay={0.7} />
               </svg>
 
               {/* Legend */}

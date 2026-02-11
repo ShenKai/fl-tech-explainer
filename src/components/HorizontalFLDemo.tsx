@@ -5,24 +5,21 @@ import { DataTable } from "./DataTable";
 import { Arrow } from "./Arrow";
 import { Button } from "./ui/button";
 import { Play, RotateCcw, ChevronRight } from "lucide-react";
+import {
+  MOCK_PEOPLE,
+  HEADERS,
+  toRows,
+  HFL_CLIENT_A,
+  HFL_CLIENT_B,
+  HFL_CLIENT_C,
+} from "@/data/mockPeopleDataset";
 
-const fullData = [
-  ["U1", "25", "NYC", "85K", "A"],
-  ["U2", "32", "LA", "92K", "B"],
-  ["U3", "28", "CHI", "78K", "A"],
-  ["U4", "45", "NYC", "120K", "C"],
-  ["U5", "38", "SF", "105K", "B"],
-  ["U6", "29", "LA", "88K", "A"],
-  ["U7", "35", "CHI", "95K", "C"],
-  ["U8", "42", "SF", "115K", "B"],
-  ["U9", "31", "NYC", "82K", "A"],
-];
+const fullData = toRows(MOCK_PEOPLE);
+const headers = HEADERS;
 
-const headers = ["ID", "Age", "City", "Income", "Class"];
-
-const clientAData = fullData.slice(0, 3);
-const clientBData = fullData.slice(3, 6);
-const clientCData = fullData.slice(6, 9);
+const clientAData = toRows(HFL_CLIENT_A);
+const clientBData = toRows(HFL_CLIENT_B);
+const clientCData = toRows(HFL_CLIENT_C);
 
 type Step = "partition" | "train" | "aggregate" | "distribute";
 

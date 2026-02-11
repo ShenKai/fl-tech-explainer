@@ -205,8 +205,8 @@ export function NeuralNetworkVFL() {
   };
 
   const partyA = { color: "hsl(200, 85%, 50%)", features: ["Age", "City"] };
-  const partyB = { color: "hsl(280, 70%, 55%)", features: ["Income", "Tier"] };
-  const partyC = { color: "hsl(35, 90%, 55%)", features: ["Tenure"] };
+  const partyB = { color: "hsl(280, 70%, 55%)", features: ["Income", "Income Class"] };
+  const partyC = { color: "hsl(35, 90%, 55%)", features: ["Name (Join Key)"] };
 
   return (
     <div className="space-y-6">
