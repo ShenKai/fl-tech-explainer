@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HorizontalFLDemo } from "@/components/HorizontalFLDemo";
 import { VerticalFLDemo } from "@/components/VerticalFLDemo";
 import { ComparisonChart } from "@/components/ComparisonChart";
+import { OrchestraAnalogy } from "@/components/OrchestraAnalogy";
+import { ExcelDataView } from "@/components/ExcelDataView";
 import { LayoutGrid, Layers, GitCompare, FlaskConical } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -108,6 +110,8 @@ const Index = () => {
                 <span className="px-3 py-1 rounded-full bg-muted">Mobile Keyboards</span>
                 <span className="px-3 py-1 rounded-full bg-muted">Google Gboard</span>
               </div>
+              <OrchestraAnalogy type="horizontal" />
+              <ExcelDataView type="horizontal" />
               <HorizontalFLDemo />
             </motion.div>
           </TabsContent>
@@ -134,6 +138,8 @@ const Index = () => {
                 <span className="px-3 py-1 rounded-full bg-muted">Bank + Retailer</span>
                 <span className="px-3 py-1 rounded-full bg-muted">Credit Scoring</span>
               </div>
+              <OrchestraAnalogy type="vertical" />
+              <ExcelDataView type="vertical" />
               <VerticalFLDemo />
             </motion.div>
           </TabsContent>
