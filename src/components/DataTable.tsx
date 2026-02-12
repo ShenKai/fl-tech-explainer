@@ -52,7 +52,7 @@ export function DataTable({
                 <th
                   key={i}
                   className={cn(
-                    "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground",
+                    "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white",
                     highlightCols.includes(i) && clientColor && clientTextColors[clientColor]
                   )}
                 >
