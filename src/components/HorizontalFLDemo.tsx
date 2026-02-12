@@ -7,19 +7,19 @@ import { Button } from "./ui/button";
 import { Play, RotateCcw, ChevronRight } from "lucide-react";
 import {
   MOCK_PEOPLE,
-  HEADERS,
-  toRows,
+  HFL_HEADERS,
+  toHflRows,
   HFL_CLIENT_A,
   HFL_CLIENT_B,
   HFL_CLIENT_C,
 } from "@/data/mockPeopleDataset";
 
-const fullData = toRows(MOCK_PEOPLE);
-const headers = HEADERS;
+const fullData = toHflRows(MOCK_PEOPLE);
+const headers = HFL_HEADERS;
 
-const clientAData = toRows(HFL_CLIENT_A);
-const clientBData = toRows(HFL_CLIENT_B);
-const clientCData = toRows(HFL_CLIENT_C);
+const clientAData = toHflRows(HFL_CLIENT_A);
+const clientBData = toHflRows(HFL_CLIENT_B);
+const clientCData = toHflRows(HFL_CLIENT_C);
 
 type Step = "partition" | "train" | "aggregate" | "distribute";
 

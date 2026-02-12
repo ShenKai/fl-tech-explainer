@@ -8,16 +8,17 @@ interface ExcelDataViewProps {
 }
 
 const headers = ["", "A", "B", "C", "D", "E"];
-const colLabels = ["Name", "Age", "City", "Income", "Class"];
+const hflColLabels = ["Name", "Age", "ECG", "Heart Rate", "Arrhythmia Risk"];
+const vflColLabels = ["Name", "Age", "City", "Income", "Class"];
 
 export function ExcelDataView({ type }: ExcelDataViewProps) {
-  const rows = MOCK_PEOPLE.map((p, i) => [
-    p.name,
-    p.age,
-    p.city,
-    p.income,
-    p.class,
-  ]);
+  const colLabels = type === "horizontal" ? hflColLabels : vflColLabels;
+
+  const rows = MOCK_PEOPLE.map((p) =>
+    type === "horizontal"
+      ? [p.name, p.age, p.ecg, p.heartRate, p.arrhythmiaRisk]
+      : [p.name, p.age, p.city, p.income, p.class]
+  );
 
   // HFL highlights: rows 0-2 client A, 3-5 client B, 6-8 client C
   const hflColors: Record<number, string> = {};
