@@ -35,8 +35,6 @@ const Index = () => {
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="gradient-text">Federated Learning</span>
-              <br />
-              <span className="text-foreground">Partitioning Explained</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-6">
               Explore how data is partitioned and models are trained in horizontal
