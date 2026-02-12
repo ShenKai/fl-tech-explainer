@@ -13,10 +13,13 @@ const levelColors: Record<string, string> = {
 };
 
 export function LogWindow({ logs }: LogWindowProps) {
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = containerRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
   }, [logs.length]);
 
   return (
@@ -30,7 +33,7 @@ export function LogWindow({ logs }: LogWindowProps) {
         <span className="text-xs font-mono text-muted-foreground">Flower Server Logs</span>
       </div>
       <ScrollArea className="h-[200px]">
-        <div className="p-3 space-y-0.5 font-mono text-[11px] leading-relaxed bg-[hsl(220_25%_6%)] text-[hsl(220_15%_75%)]">
+        <div ref={containerRef} className="p-3 space-y-0.5 font-mono text-[11px] leading-relaxed bg-[hsl(220_25%_6%)] text-[hsl(220_15%_75%)]">
           {logs.length === 0 && (
             <p className="text-muted-foreground opacity-50">
               $ waiting for simulation to start...
@@ -43,7 +46,6 @@ export function LogWindow({ logs }: LogWindowProps) {
               <span>{log.message}</span>
             </div>
           ))}
-          <div ref={bottomRef} />
         </div>
       </ScrollArea>
     </div>
