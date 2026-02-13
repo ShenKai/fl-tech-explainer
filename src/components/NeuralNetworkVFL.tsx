@@ -33,6 +33,20 @@ const steps: { key: Step; label: string; description: string }[] = [
   },
 ];
 
+// Shared sizing constants for neuron alignment
+const NEURON_COMPACT = { size: 18, gap: 6 }; // w-[18px] + 6px gap
+const NEURON_NORMAL = { size: 22, gap: 8 };  // w-[22px] + 8px gap
+
+function neuronCenterY(index: number, compact?: boolean) {
+  const { size, gap } = compact ? NEURON_COMPACT : NEURON_NORMAL;
+  return index * (size + gap) + size / 2;
+}
+
+function neuronTotalHeight(count: number, compact?: boolean) {
+  const { size, gap } = compact ? NEURON_COMPACT : NEURON_NORMAL;
+  return count * size + (count - 1) * gap;
+}
+
 interface NeuronLayerProps {
   neurons: number;
   color: string;
@@ -43,8 +57,7 @@ interface NeuronLayerProps {
 }
 
 function NeuronLayer({ neurons, color, label, active, delay = 0, compact }: NeuronLayerProps) {
-  const size = compact ? "w-3 h-3" : "w-4 h-4";
-  const gap = compact ? "gap-1" : "gap-1.5";
+  const { size, gap } = compact ? NEURON_COMPACT : NEURON_NORMAL;
   
   return (
     <motion.div
@@ -53,13 +66,15 @@ function NeuronLayer({ neurons, color, label, active, delay = 0, compact }: Neur
       transition={{ delay }}
       className="flex flex-col items-center gap-1"
     >
-      {label && <span className="text-[9px] font-medium opacity-70">{label}</span>}
-      <div className={`flex flex-col ${gap}`}>
+      {label && <span className="text-[10px] font-medium opacity-70">{label}</span>}
+      <div className="flex flex-col" style={{ gap: `${gap}px` }}>
         {Array.from({ length: neurons }).map((_, i) => (
           <motion.div
             key={i}
-            className={`${size} rounded-full border-2`}
+            className="rounded-full border-2"
             style={{
+              width: size,
+              height: size,
               borderColor: color,
               backgroundColor: active ? color : "transparent",
             }}
@@ -78,25 +93,34 @@ interface ConnectionsProps {
   color: string;
   active?: boolean;
   delay?: number;
+  compact?: boolean;
 }
 
-function Connections({ fromCount, toCount, color, active, delay = 0 }: ConnectionsProps) {
+function Connections({ fromCount, toCount, color, active, delay = 0, compact }: ConnectionsProps) {
+  const svgWidth = 36;
+  const fromHeight = neuronTotalHeight(fromCount, compact);
+  const toHeight = neuronTotalHeight(toCount, compact);
+  const svgHeight = Math.max(fromHeight, toHeight);
+  const fromOffset = (svgHeight - fromHeight) / 2;
+  const toOffset = (svgHeight - toHeight) / 2;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: active ? 0.8 : 0.3 }}
       transition={{ delay }}
-      className="w-6 flex items-center justify-center"
+      className="flex items-center justify-center"
+      style={{ width: svgWidth }}
     >
-      <svg width="24" height={Math.max(fromCount, toCount) * 20} className="overflow-visible">
+      <svg width={svgWidth} height={svgHeight} className="overflow-visible">
         {Array.from({ length: fromCount }).map((_, i) =>
           Array.from({ length: toCount }).map((_, j) => (
             <motion.line
               key={`${i}-${j}`}
               x1="0"
-              y1={i * 18 + 10}
-              x2="24"
-              y2={j * 18 + 10}
+              y1={fromOffset + neuronCenterY(i, compact)}
+              x2={svgWidth}
+              y2={toOffset + neuronCenterY(j, compact)}
               stroke={color}
               strokeWidth={active ? 1.5 : 0.5}
               initial={{ pathLength: 0 }}
@@ -128,7 +152,7 @@ function BottomModel({ partyLabel, color, features, active, showGradient, delay 
       className="flex flex-col items-center"
     >
       <div
-        className="rounded-xl p-3 border-2 backdrop-blur-sm relative"
+        className="rounded-xl p-4 border-2 backdrop-blur-sm relative"
         style={{ borderColor: color, backgroundColor: `${color}15` }}
       >
         <div className="text-[10px] font-bold text-center mb-2" style={{ color }}>
@@ -151,11 +175,11 @@ function BottomModel({ partyLabel, color, features, active, showGradient, delay 
         </div>
 
         {/* Neural Network Layers */}
-        <div className="flex items-center gap-1 justify-center">
+        <div className="flex items-center gap-2 justify-center">
           <NeuronLayer neurons={features.length} color={color} label="Input" delay={delay + 0.2} compact />
-          <Connections fromCount={features.length} toCount={4} color={color} active={active} delay={delay + 0.3} />
+          <Connections fromCount={features.length} toCount={4} color={color} active={active} delay={delay + 0.3} compact />
           <NeuronLayer neurons={4} color={color} label="Hidden" active={active} delay={delay + 0.4} compact />
-          <Connections fromCount={4} toCount={2} color={color} active={active} delay={delay + 0.5} />
+          <Connections fromCount={4} toCount={2} color={color} active={active} delay={delay + 0.5} compact />
           <NeuronLayer neurons={2} color={color} label="Embed" active={active} delay={delay + 0.6} compact />
         </div>
 
@@ -243,7 +267,7 @@ export function NeuralNetworkVFL() {
       </motion.div>
 
       {/* Visualization */}
-      <div className="relative min-h-[450px]">
+      <div className="relative min-h-[550px]">
         <AnimatePresence mode="wait">
           {step === "partition" && (
             <motion.div
@@ -270,7 +294,7 @@ export function NeuralNetworkVFL() {
                 <div className="text-[10px] font-bold text-center mb-3 text-emerald-400">
                   Aggregator - Top Model
                 </div>
-                <div className="flex items-center gap-2 justify-center">
+                <div className="flex items-center gap-3 justify-center">
                   <NeuronLayer neurons={6} color="hsl(160, 70%, 50%)" label="Concat" delay={0.6} />
                   <Connections fromCount={6} toCount={4} color="hsl(160, 70%, 50%)" delay={0.7} />
                   <NeuronLayer neurons={4} color="hsl(160, 70%, 50%)" label="Hidden" delay={0.8} />
@@ -406,7 +430,7 @@ export function NeuralNetworkVFL() {
                 <div className="text-[10px] font-bold text-center mb-3 text-emerald-400">
                   Top Model - Forward Pass
                 </div>
-                <div className="flex items-center gap-2 justify-center">
+                <div className="flex items-center gap-3 justify-center">
                   <NeuronLayer neurons={6} color="hsl(160, 70%, 50%)" label="[E_A,E_B,E_C]" active delay={1} />
                   <Connections fromCount={6} toCount={4} color="hsl(160, 70%, 50%)" active delay={1.1} />
                   <NeuronLayer neurons={4} color="hsl(160, 70%, 50%)" active delay={1.2} />

@@ -52,9 +52,9 @@ function TreeNode({ label, isLeaf, color, x, y, delay = 0, active, children }: T
         <>
           <motion.line
             x1={x}
-            y1={y + 15}
+            y1={y + 20}
             x2={children.leftX}
-            y2={children.leftY - 15}
+            y2={children.leftY - 20}
             stroke={color}
             strokeWidth={2}
             initial={{ pathLength: 0 }}
@@ -63,9 +63,9 @@ function TreeNode({ label, isLeaf, color, x, y, delay = 0, active, children }: T
           />
           <motion.line
             x1={x}
-            y1={y + 15}
+            y1={y + 20}
             x2={children.rightX}
-            y2={children.rightY - 15}
+            y2={children.rightY - 20}
             stroke={color}
             strokeWidth={2}
             initial={{ pathLength: 0 }}
@@ -83,11 +83,11 @@ function TreeNode({ label, isLeaf, color, x, y, delay = 0, active, children }: T
       >
         {isLeaf ? (
           <motion.rect
-            x={x - 25}
-            y={y - 12}
-            width={50}
-            height={24}
-            rx={4}
+            x={x - 32}
+            y={y - 14}
+            width={64}
+            height={28}
+            rx={6}
             fill={color}
             animate={active ? { scale: [1, 1.1, 1] } : {}}
             transition={{ duration: 0.5 }}
@@ -96,20 +96,20 @@ function TreeNode({ label, isLeaf, color, x, y, delay = 0, active, children }: T
           <motion.circle
             cx={x}
             cy={y}
-            r={20}
+            r={26}
             fill={`${color}30`}
             stroke={color}
-            strokeWidth={2}
+            strokeWidth={2.5}
             animate={active ? { scale: [1, 1.1, 1] } : {}}
             transition={{ duration: 0.5 }}
           />
         )}
         <text
           x={x}
-          y={y + 3}
+          y={y + 4}
           textAnchor="middle"
           fill="white"
-          fontSize={isLeaf ? 9 : 8}
+          fontSize={isLeaf ? 11 : 10}
           fontWeight="bold"
         >
           {label}
@@ -134,7 +134,7 @@ function PartyBox({ label, color, features, splits, active, delay = 0 }: PartyBo
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      className="rounded-xl p-3 border-2 backdrop-blur-sm min-w-[140px]"
+      className="rounded-xl p-4 border-2 backdrop-blur-sm min-w-[160px]"
       style={{ borderColor: color, backgroundColor: `${color}15` }}
     >
       <div className="text-[10px] font-bold text-center mb-2" style={{ color }}>
@@ -248,7 +248,7 @@ export function DecisionTreeVFL() {
       </motion.div>
 
       {/* Visualization */}
-      <div className="relative min-h-[420px]">
+      <div className="relative min-h-[520px]">
         <AnimatePresence mode="wait">
           {step === "partition" && (
             <motion.div
@@ -402,45 +402,45 @@ export function DecisionTreeVFL() {
               className="flex flex-col items-center gap-4"
             >
               {/* Tree visualization */}
-              <svg width="400" height="200" className="overflow-visible">
+              <svg width="500" height="260" className="overflow-visible">
                 {/* Root - Party B */}
                 <TreeNode
                   label="Income>80K"
                   color={partyB.color}
-                  x={200}
-                  y={30}
+                  x={250}
+                  y={35}
                   delay={0}
                   active
-                  children={{ leftX: 100, rightX: 300, leftY: 90, rightY: 90 }}
+                  children={{ leftX: 125, rightX: 375, leftY: 120, rightY: 120 }}
                 />
                 
                 {/* Level 2 Left - Party A */}
                 <TreeNode
                   label="Age<30"
                   color={partyA.color}
-                  x={100}
-                  y={90}
+                  x={125}
+                  y={120}
                   delay={0.3}
                   active
-                  children={{ leftX: 50, rightX: 150, leftY: 150, rightY: 150 }}
+                  children={{ leftX: 62, rightX: 188, leftY: 205, rightY: 205 }}
                 />
                 
                 {/* Level 2 Right - Party C */}
                 <TreeNode
                   label="Age>35"
                   color={partyC.color}
-                  x={300}
-                  y={90}
+                  x={375}
+                  y={120}
                   delay={0.3}
                   active
-                  children={{ leftX: 250, rightX: 350, leftY: 150, rightY: 150 }}
+                  children={{ leftX: 312, rightX: 438, leftY: 205, rightY: 205 }}
                 />
                 
                 {/* Leaves */}
-                <TreeNode label="≤50K" isLeaf color="hsl(140, 60%, 45%)" x={50} y={150} delay={0.6} />
-                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={150} y={150} delay={0.7} />
-                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={250} y={150} delay={0.8} />
-                <TreeNode label="≤50K" isLeaf color="hsl(0, 60%, 50%)" x={350} y={150} delay={0.9} />
+                <TreeNode label="≤50K" isLeaf color="hsl(140, 60%, 45%)" x={62} y={205} delay={0.6} />
+                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={188} y={205} delay={0.7} />
+                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={312} y={205} delay={0.8} />
+                <TreeNode label="≤50K" isLeaf color="hsl(0, 60%, 50%)" x={438} y={205} delay={0.9} />
               </svg>
 
               {/* Inference path */}
@@ -469,35 +469,35 @@ export function DecisionTreeVFL() {
               className="flex flex-col items-center gap-6"
             >
               {/* Final Tree Summary */}
-              <svg width="400" height="180" className="overflow-visible">
+              <svg width="500" height="240" className="overflow-visible">
                 <TreeNode
                   label="Income>80K"
                   color={partyB.color}
-                  x={200}
-                  y={30}
+                  x={250}
+                  y={35}
                   delay={0}
-                  children={{ leftX: 100, rightX: 300, leftY: 90, rightY: 90 }}
+                  children={{ leftX: 125, rightX: 375, leftY: 115, rightY: 115 }}
                 />
                 <TreeNode
                   label="Age<30"
                   color={partyA.color}
-                  x={100}
-                  y={90}
+                  x={125}
+                  y={115}
                   delay={0.2}
-                  children={{ leftX: 50, rightX: 150, leftY: 150, rightY: 150 }}
+                  children={{ leftX: 62, rightX: 188, leftY: 195, rightY: 195 }}
                 />
                 <TreeNode
                   label="Age>35"
                   color={partyC.color}
-                  x={300}
-                  y={90}
+                  x={375}
+                  y={115}
                   delay={0.2}
-                  children={{ leftX: 250, rightX: 350, leftY: 150, rightY: 150 }}
+                  children={{ leftX: 312, rightX: 438, leftY: 195, rightY: 195 }}
                 />
-                <TreeNode label="≤50K" isLeaf color="hsl(140, 60%, 45%)" x={50} y={150} delay={0.4} />
-                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={150} y={150} delay={0.5} />
-                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={250} y={150} delay={0.6} />
-                <TreeNode label="≤50K" isLeaf color="hsl(0, 60%, 50%)" x={350} y={150} delay={0.7} />
+                <TreeNode label="≤50K" isLeaf color="hsl(140, 60%, 45%)" x={62} y={195} delay={0.4} />
+                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={188} y={195} delay={0.5} />
+                <TreeNode label=">50K" isLeaf color="hsl(40, 70%, 50%)" x={312} y={195} delay={0.6} />
+                <TreeNode label="≤50K" isLeaf color="hsl(0, 60%, 50%)" x={438} y={195} delay={0.7} />
               </svg>
 
               {/* Legend */}
