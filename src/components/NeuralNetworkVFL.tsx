@@ -175,7 +175,7 @@ function BottomModel({ partyLabel, color, features, active, showGradient, delay 
         </div>
 
         {/* Neural Network Layers */}
-        <div className="flex items-end gap-2 justify-center">
+        <div className="flex items-center gap-2 justify-center">
           <NeuronLayer neurons={features.length} color={color} label="Input" delay={delay + 0.2} compact />
           <Connections fromCount={features.length} toCount={4} color={color} active={active} delay={delay + 0.3} compact />
           <NeuronLayer neurons={4} color={color} label="Hidden" active={active} delay={delay + 0.4} compact />
@@ -294,7 +294,7 @@ export function NeuralNetworkVFL() {
                 <div className="text-[10px] font-bold text-center mb-3 text-emerald-400">
                   Aggregator - Top Model
                 </div>
-                <div className="flex items-end gap-3 justify-center">
+                <div className="flex items-center gap-3 justify-center">
                   <NeuronLayer neurons={6} color="hsl(160, 70%, 50%)" label="Concat" delay={0.6} />
                   <Connections fromCount={6} toCount={4} color="hsl(160, 70%, 50%)" delay={0.7} />
                   <NeuronLayer neurons={4} color="hsl(160, 70%, 50%)" label="Hidden" delay={0.8} />
@@ -430,7 +430,7 @@ export function NeuralNetworkVFL() {
                 <div className="text-[10px] font-bold text-center mb-3 text-emerald-400">
                   Top Model - Forward Pass
                 </div>
-                <div className="flex items-end gap-3 justify-center">
+                <div className="flex items-center gap-3 justify-center">
                   <NeuronLayer neurons={6} color="hsl(160, 70%, 50%)" label="[E_A,E_B,E_C]" active delay={1} />
                   <Connections fromCount={6} toCount={4} color="hsl(160, 70%, 50%)" active delay={1.1} />
                   <NeuronLayer neurons={4} color="hsl(160, 70%, 50%)" active delay={1.2} />
