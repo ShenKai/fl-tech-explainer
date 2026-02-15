@@ -402,7 +402,7 @@ export function DecisionTreeVFL() {
               className="flex flex-col items-center gap-4"
             >
               {/* Tree visualization */}
-              <svg width="620" height="320" className="overflow-visible">
+              <svg viewBox="0 0 620 320" className="w-full max-w-[620px] h-auto overflow-visible">
                 {/* Root - Party B */}
                 <TreeNode
                   label="Income>80K"
@@ -469,7 +469,7 @@ export function DecisionTreeVFL() {
               className="flex flex-col items-center gap-6"
             >
               {/* Final Tree Summary */}
-              <svg width="620" height="300" className="overflow-visible">
+              <svg viewBox="0 0 620 300" className="w-full max-w-[620px] h-auto overflow-visible">
                 <TreeNode
                   label="Income>80K"
                   color={partyB.color}
